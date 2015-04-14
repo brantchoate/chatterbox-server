@@ -1,3 +1,6 @@
+var path = require('path'),
+url = require("url");
+
 /*************************************************************
 
 You should implement your request handler function in this file.
@@ -15,7 +18,10 @@ var payload = {
   results : []
 }
 
-var requestHandler = module.exports = function(request, response) {
+// var uri = url.parse(request.url).pathname
+// , filename = path.join(process.cwd(), uri);
+
+var requestHandler = module.exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -36,11 +42,16 @@ var requestHandler = module.exports = function(request, response) {
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "application/json";
 
-
+  // path.exists(filename, function(exists) {
+  //   if(!exists) {
+  //     response.writeHead(404, {"Content-Type": "text/plain"});
+  //     response.write("404 Not Found\n");
+  //     response.end();
+  //     return;
+  //   }
+  // }
 
   if(request.method === 'GET'){
-
-
     response.writeHead(statusCode, headers);
     response.end(JSON.stringify(payload));
   }
@@ -49,19 +60,16 @@ var requestHandler = module.exports = function(request, response) {
     var str ="";
     statusCode = 201;
     response.writeHead(statusCode, headers);
+
     request.on('data', function(chunk){
       str+=chunk;
     });
 
-   // response.end(JSON.stringify(payload));
     request.on('end', function() {
-      payload.results.push(str);
-      //get the results and then do JSON.parse
-      response.write(JSON.parse(payload.results));
-
+      payload.results.push(JSON.parse(str));
     });
 
-    response.end('');
+    response.end(JSON.stringify(payload));
 
   }
   // The outgoing status.
