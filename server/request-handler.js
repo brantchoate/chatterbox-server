@@ -13,7 +13,12 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var payload = {
-  results : []
+  results : [
+    {
+      'username': 'Jono',
+      'text': 'Do my bidding!'
+    }
+  ]
 }
 
 
@@ -43,7 +48,13 @@ var requestHandler = module.exports.requestHandler = function(request, response)
   if ( request.url !== "/classes/messages" && request.url !== "/classes/room1"   ) {
     statusCode = 404;
     response.writeHead(statusCode, headers);
-    response.end(JSON.stringify(payload));
+    response.end("");
+  }
+
+  if(request.method === 'OPTIONS'){
+     headers['Allow'] = "GET,POST,OPTIONS";
+    response.writeHead(statusCode, headers);
+    response.end("");
   }
 
   if(request.method === 'GET'){
@@ -58,9 +69,12 @@ var requestHandler = module.exports.requestHandler = function(request, response)
 
     request.on('data', function(chunk){
       str+=chunk;
+      console.log("str");
     });
 
     request.on('end', function() {
+      console.log("end");
+      console.log(str);
       payload.results.push(JSON.parse(str));
     });
 
