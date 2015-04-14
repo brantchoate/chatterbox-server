@@ -1,5 +1,3 @@
-var path = require('path'),
-url = require("url");
 
 /*************************************************************
 
@@ -18,8 +16,6 @@ var payload = {
   results : []
 }
 
-// var uri = url.parse(request.url).pathname
-// , filename = path.join(process.cwd(), uri);
 
 var requestHandler = module.exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -37,19 +33,18 @@ var requestHandler = module.exports.requestHandler = function(request, response)
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
+
   var statusCode = 200;
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "application/json";
 
-  // path.exists(filename, function(exists) {
-  //   if(!exists) {
-  //     response.writeHead(404, {"Content-Type": "text/plain"});
-  //     response.write("404 Not Found\n");
-  //     response.end();
-  //     return;
-  //   }
-  // }
+
+  if ( request.url !== "/classes/messages" && request.url !== "/classes/room1"   ) {
+    statusCode = 404;
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify(payload));
+  }
 
   if(request.method === 'GET'){
     response.writeHead(statusCode, headers);
