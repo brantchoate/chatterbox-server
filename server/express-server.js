@@ -1,12 +1,33 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/expressDB');
 var app = express();
-var payload = {results : [{
-      'username': 'Wizard',
-      'text': 'invoke!',
-    }]
-}
+var payload = {results : [] };
 
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+  console.log('YAY');
+});
+
+var messageSchema = mongoose.Schema({
+    username: String,
+    text: String
+});
+
+var Message = mongoose.model('Message', messageSchema);
+
+Message.find(function (err, messages) {
+  if (err) return console.error(err);
+  messages.forEach(function(message) {
+    payload.results.push(message);
+  });
+
+});
+
+
+//////////////////////////////////////////////////////////////////////
 app.use(bodyParser.json());
 
 app.get('/classes/messages', function(req, res) {
@@ -14,6 +35,8 @@ app.get('/classes/messages', function(req, res) {
 });
 
 app.post('/classes/messages', function(req, res) {
+  var message = new Message(req.body);
+  message.save();
   payload.results.push(req.body);
   res.status(200).set(defaultCorsHeaders).json(req.body);
 });

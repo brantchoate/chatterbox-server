@@ -13,6 +13,10 @@
     "chai": "^1.9.0"
   },
   "dependencies": {
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "mongoose": "^4.0.1",
+    "mysql": "^2.6.1",
     "underscore": "^1.8.3"
   }
 }

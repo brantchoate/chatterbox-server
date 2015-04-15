@@ -62,7 +62,6 @@ $(function() {
         contentType: 'application/json',
         //data: { order: '-createdAt'},
         success: function(data) {
-          console.log(data);
           console.log('chatterbox: Messages fetched');
 
           // Don't bother if we have nothing to work with
@@ -94,7 +93,6 @@ $(function() {
     },
     populateMessages: function(results, animate) {
       // Clear existing messages
-      console.log("populate");
       app.clearMessages();
       app.stopSpinner();
       if (Array.isArray(results)) {
@@ -114,7 +112,7 @@ $(function() {
       }
     },
     populateRooms: function(results) {
-      app.$roomSelect.html('<option value="__newRoom">New room...</option><option value="" selected>Lobby</option></select>');
+      app.$roomSelect.html('<option value="__newRoom">New room...</option>');
 
       if (results) {
         var rooms = {};
